@@ -1,0 +1,17 @@
+{
+  "address": "1234 xyz street, berlin, 12353",
+  "pizzas": [
+    {
+      "name": "Supreme",
+      "quantity": 1,
+      "size": "Large"
+    }
+  ],
+  "special_requests": [
+    "Halal"
+  ],
+  "toppings": [
+    "Extra cheese"
+  ],
+  "total": 20.49
+}
