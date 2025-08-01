@@ -6,8 +6,8 @@
 - [Features](#features-)
 - [Technologies](#technologies-)
 - [Installation](#installation-)
-  - [Windows](#windows-setup)
-  - [macOS](#macos-setup)
+- [Windows](#windows-setup)
+- [macOS](#macos-setup)
 - [Running the App](#running-the-app-)
 - [Project Structure](#project-structure-)
 - [Development Team](#development-team-)
@@ -63,7 +63,7 @@
    ```bash
    winget brew install python ollama
    winget ollama pull mistral:7b
-    winget pip3 install flask requests
+   winget pip3 install flask requests
 
 ## Running the App 🚀
 1. **Start AI Service (Terminal 1):**:
@@ -95,4 +95,14 @@ AI_Pizza_Delivery_App/
     Ajaz Sayed	AI Integration & Prompt
     Asit Ravindra Dhage	Frontend Development
     Om Shivale	Testing & Validation
+## Usage Guide 📋
+1. **Initiate Order:**
+2. **Customization:**
+   -Choose Pizza type
+   -Choose Pizza Size
+   -Choose Top[pings
+   -Choose Special Instructions
+   -Type Address
+   
+4. **Confirm:**
 
