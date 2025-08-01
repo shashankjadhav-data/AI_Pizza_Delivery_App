@@ -29,7 +29,7 @@
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## Technologies 🛠️
-| Component        | Technology          |
+| Component        | Technology        |
 |-----------------|--------------------|
 | Backend         | Python Flask       |
 | AI Engine       | Ollama Mistral:7b  |
