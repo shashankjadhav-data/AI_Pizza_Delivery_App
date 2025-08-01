@@ -88,6 +88,7 @@ AI_Pizza_Delivery_App/
           ├── flowchart.png # Mermaid flowchart
           ├── LICENSE # MIT License
           ├── Screenshots/ # Sample output screenshots
+          ├── Screen Recording/ # Sample output video
           └── README.md # This document
 ## Development Team 👥
 | Name	                       | Contribution Area               |
