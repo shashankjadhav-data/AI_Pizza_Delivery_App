@@ -78,12 +78,14 @@
 
 ## Project Structure 📂
 AI_Pizza_Delivery_App/
-├── app.py # Main Flask application
-├── templates/
-│ └── index.html # Chat interface HTML
-├── run.py # Optional script to run the app
-├── requirements.txt # Python dependencies
-├── flowchart.png # Mermaid flowchart
-├── LICENSE # MIT License
-├── Screenshots/ # Sample output screenshots
-└── README.md # This document
+
+          ├── app.py # Main Flask application
+          
+          ├── templates/
+          │ └── index.html # Chat interface HTML
+          ├── run.py # Optional script to run the app
+          ├── requirements.txt # Python dependencies
+          ├── flowchart.png # Mermaid flowchart
+          ├── LICENSE # MIT License
+          ├── Screenshots/ # Sample output screenshots
+          └── README.md # This document
