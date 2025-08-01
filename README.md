@@ -90,10 +90,10 @@ AI_Pizza_Delivery_App/
           ├── Screenshots/ # Sample output screenshots
           └── README.md # This document
 ## Development Team 👥
-| Name	                       | Contribution Area           |
+| Name	                       | Contribution Area               |
 |------------------------------|-----------------------------|
-| Shashank Valmik Jadhav	     | Backend Architecture        |
-|  Ajaz Sayed	                 | AI Integration & Prompt     |
+| Shashank Valmik Jadhav	     | Backend Architecture with AI Integration        |
+|  Ajaz Sayed	                 | Prompt                       |
 | Asit Ravindra Dhage	         | Frontend Development        |
 | Om Shivale                   | Testing & Validation        |
 
