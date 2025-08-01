@@ -1,8 +1,6 @@
 # AI Pizza Ordering System 🍕
 
-<div align="center">
-  <img src="screenshot.png" alt="System Screenshot" width="600">
-</div>
+
 
 ## Table of Contents
 - [Features](#features-)
