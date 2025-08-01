@@ -108,4 +108,8 @@ AI_Pizza_Delivery_App/
 - Type Address
        
 4. **Confirm the order (Yes/No)**
+## Interface Features
+-Tabbed View: Toggle between order summary and raw JSON
+-Order Summary: Itemized pricing with total
+-Manual Confirm: Alternative confirmation button
 
