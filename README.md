@@ -54,6 +54,27 @@
 4. **Install Dependencies:**:
    ```powershell
    winget pip install flask requests
-## macOS Setup:
-  * 1.Install Homebrew:
-    winget /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+### macOS Setup:
+
+1. **Install Homebrew:**:
+   ```bash
+   winget /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+2. **Install Dependencies:**:
+   ```bash
+   winget brew install python ollama
+   winget ollama pull mistral:7b
+    winget pip3 install flask requests
+
+## Running the App 🚀
+1. **Start AI Service (Terminal 1):**:
+   ```bash
+   winget ollama serve
+2. **Run Flask App (Terminal 2):**:
+   ```bash
+   winget python app.py
+3. **Access Interface:**:
+   ```Open browser and go to
+   winget (http://localhost:5001)
+
+## Project Structure 📂
+
