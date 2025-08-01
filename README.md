@@ -112,4 +112,4 @@ AI_Pizza_Delivery_App/
 - Tabbed View: Toggle between order summary and raw JSON
 - Order Summary: Itemized pricing with total
 - Manual Confirm: Alternative confirmation button
-
+## MIT License - See LICENSE for full text in the github repo.
