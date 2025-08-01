@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pizza Delivery</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+        header {
+            background: #e74c3c;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+        #chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user-message {
+            align-self: flex-end;
+            background: #3498db;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #eee;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+        #user-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        .btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: #3498db;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-warning {
+            background: #f39c12;
+        }
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        #status {
+            text-align: center;
+            padding: 10px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .confirmation-area {
+            padding: 0 20px 20px;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+        .order-summary {
+            background: #e8f4f8;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .order-summary h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .order-section {
+            margin-bottom: 15px;
+        }
+        .order-section h4 {
+            margin-bottom: 8px;
+            color: #3498db;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .special-instruction {
+            font-style: italic;
+            color: #7f8c8d;
+            padding-left: 15px;
+            margin: 3px 0;
+        }
+        .address {
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .order-total {
+            font-weight: bold;
+            border-top: 2px solid #3498db;
+            padding-top: 10px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .json-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-btn {
+            padding: 10px 15px;
+            background: #f1f1f1;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍕 AI Pizza Delivery</h1>
+            <p>Chat with our AI assistant to place your order</p>
+        </header>
+        
+        <div id="chat-container"></div>
+        
+        <div class="confirmation-area">
+            <div id="order-container" class="hidden">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="summary">Order Summary</button>
+                    <button class="tab-btn" data-tab="json">Raw JSON</button>
+                </div>
+                
+                <div id="summary-tab" class="tab-content active">
+                    <div class="order-summary">
+                        <h3>Your Order Summary</h3>
+                        <div id="order-summary-content"></div>
+                    </div>
+                </div>
+                
+                <div id="json-tab" class="tab-content">
+                    <div class="json-container">
+                        <pre id="json-output"></pre>
+                    </div>
+                </div>
+                
+                <div class="confirmation-buttons">
+                    <button id="confirm-btn" class="btn confirm-btn">✅ Confirm Order</button>
+                    <button id="manual-confirm-btn" class="btn btn-warning">🔄 Confirm Manually</button>
+                    <button id="edit-btn" class="btn edit-btn">✏️ Edit Order</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-btn" class="btn">Send</button>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const statusDiv = document.getElementById('status');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const manualConfirmBtn = document.getElementById('manual-confirm-btn');
+        const editBtn = document.getElementById('edit-btn');
+        const orderContainer = document.getElementById('order-container');
+        const orderSummary = document.getElementById('order-summary-content');
+        const jsonOutput = document.getElementById('json-output');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        let currentOrder = null;
+        let isProcessing = false;
+        
+        // Menu data for client-side formatting
+        const PIZZA_MENU = {
+            "Margherita": { "Small": 9.99, "Medium": 12.99, "Large": 15.99 },
+            "Pepperoni": { "Small": 11.99, "Medium": 14.99, "Large": 17.99 },
+            "Vegetarian": { "Small": 10.99, "Medium": 13.99, "Large": 16.99 },
+            "Supreme": { "Small": 12.99, "Medium": 15.99, "Large": 18.99 },
+            "Hawaiian": { "Small": 11.49, "Medium": 14.49, "Large": 17.49 }
+        };
+        
+        const TOPPINGS = {
+            "Extra cheese": 1.50,
+            "Mushrooms": 1.00,
+            "Olives": 0.75,
+            "Peppers": 0.75,
+            "Onions": 0.50,
+            "Sausage": 1.25,
+            "Bacon": 1.75
+        };
+        
+        // Tab switching
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                const tabId = btn.dataset.tab + '-tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        function displayMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender + '-message');
+            msgDiv.textContent = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function updateOrderDisplay(order) {
+            let summaryHTML = '';
+            
+            // Pizzas
+            if (order.pizzas && order.pizzas.length > 0) {
+                summaryHTML += '<div class="order-section"><h4>Pizzas</h4>';
+                order.pizzas.forEach(pizza => {
+                    const pizzaPrice = PIZZA_MENU[pizza.name][pizza.size];
+                    summaryHTML += `
+                        <div class="order-item">
+                            <span>${pizza.quantity}x ${pizza.name} (${pizza.size})</span>
+                            <span>$${(pizzaPrice * pizza.quantity).toFixed(2)}</span>
+                        </div>`;
+                    if (pizza.special_instructions) {
+                        summaryHTML += `<div class="special-instruction">(${pizza.special_instructions})</div>`;
+                    }
+                });
+                summaryHTML += '</div>';
+            }
+            
+            // Toppings
+            if (order.toppings && order.toppings.length > 0) {
+                summaryHTML += '<div class="order-section"><h4>Extra Toppings</h4>';
+                order.toppings.forEach(topping => {
+                    summaryHTML += `
+                        <div class="order-item">
+                            <span>${topping}</span>
+                            <span>$${TOPPINGS[topping].toFixed(2)}</span>
+                        </div>`;
+                });
+                summaryHTML += '</div>';
+            }
+            
+            // Special Requests
+            if (order.special_requests && order.special_requests.length > 0) {
+                summaryHTML += '<div class="order-section"><h4>Special Requests</h4>';
+                order.special_requests.forEach(req => {
+                    summaryHTML += `
+                        <div class="order-item">
+                            <span>${req}</span>
+                        </div>`;
+                });
+                summaryHTML += '</div>';
+            }
+            
+            // Address
+            if (order.address) {
+                summaryHTML += `
+                    <div class="order-section">
+                        <h4>Delivery Address</h4>
+                        <div class="address">${order.address}</div>
+                    </div>`;
+            }
+            
+            // Total
+            summaryHTML += `
+                <div class="order-total">
+                    <span>Total:</span>
+                    <span>$${order.total.toFixed(2)}</span>
+                </div>`;
+            
+            orderSummary.innerHTML = summaryHTML;
+            jsonOutput.textContent = JSON.stringify(order, null, 2);
+        }
+        
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message || isProcessing) return;
+            
+            displayMessage(message, 'user');
+            userInput.value = '';
+            isProcessing = true;
+            statusDiv.textContent = 'AI is processing...';
+            
+            fetch('/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message})
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network error');
+                return response.json();
+            })
+            .then(data => {
+                if (data.response.includes("Sorry, an error occurred")) {
+                    throw new Error(data.response);
+                }
+                
+                displayMessage(data.response, 'bot');
+                
+                if (data.order) {
+                    currentOrder = data.order;
+                    updateOrderDisplay(currentOrder);
+                    orderContainer.classList.remove('hidden');
+                    orderContainer.scrollIntoView({behavior: 'smooth'});
+                }
+            })
+            .catch(error => {
+                displayMessage(error.message, 'bot');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                isProcessing = false;
+                statusDiv.textContent = '';
+            });
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        confirmBtn.addEventListener('click', () => {
+            if (!currentOrder) return;
+            
+            confirmBtn.disabled = true;
+            statusDiv.textContent = 'Confirming order...';
+            
+            fetch('/confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(currentOrder)
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayMessage(data.message, 'bot');
+                orderContainer.classList.add('hidden');
+                currentOrder = null;
+            })
+            .catch(error => {
+                alert('Error confirming order. Please try again.');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                confirmBtn.disabled = false;
+                statusDiv.textContent = '';
+            });
+        });
+        
+        manualConfirmBtn.addEventListener('click', () => {
+            if (!currentOrder) return;
+            
+            manualConfirmBtn.disabled = true;
+            statusDiv.textContent = 'Manually confirming order...';
+            
+            fetch('/manual-confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(currentOrder)
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayMessage(data.message, 'bot');
+                orderContainer.classList.add('hidden');
+                currentOrder = null;
+            })
+            .catch(error => {
+                alert('Error confirming order. Please try again.');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                manualConfirmBtn.disabled = false;
+                statusDiv.textContent = '';
+            });
+        });
+        
+        editBtn.addEventListener('click', () => {
+            if (!currentOrder) return;
+            
+            displayMessage("What would you like to change?", 'bot');
+            orderContainer.classList.add('hidden');
+            currentOrder = null;
+            userInput.focus();
+        });
+        
+        // Initial focus
+        userInput.focus();
+    </script>
+</body>
+</html>
