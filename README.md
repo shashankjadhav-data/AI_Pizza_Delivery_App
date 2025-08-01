@@ -109,7 +109,7 @@ AI_Pizza_Delivery_App/
        
 4. **Confirm the order (Yes/No)**
 ## Interface Features
--Tabbed View: Toggle between order summary and raw JSON
--Order Summary: Itemized pricing with total
--Manual Confirm: Alternative confirmation button
+- Tabbed View: Toggle between order summary and raw JSON
+- Order Summary: Itemized pricing with total
+- Manual Confirm: Alternative confirmation button
 
