@@ -112,4 +112,11 @@ AI_Pizza_Delivery_App/
 - Tabbed View: Toggle between order summary and raw JSON
 - Order Summary: Itemized pricing with total
 - Manual Confirm: Alternative confirmation button
+
+## Support ❓
+- Check your Python Version
+- Check the dependencies
+- Check Ollama Server is running or not
+- Check for the port conflicts
+    lsof -i :5001
 ## MIT License - See LICENSE for full text in the github repo.
