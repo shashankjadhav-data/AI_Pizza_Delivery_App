@@ -43,3 +43,14 @@
 1. **Install Python 3.11+**:
    ```powershell
    winget install Python.Python.3.11
+2. **Install Install Ollama:**:
+   ```powershell
+   winget curl.exe -o ollama_install.exe https://ollama.com/download/OllamaSetup.exe
+   winget Start-Process -Wait ollama_install.exe
+   winget $env:Path += ";$env:LOCALAPPDATA\Ollama"
+3. **Download AI Model:**:
+   ```powershell
+   winget ollama pull mistral:7b
+4. **Install Dependencies:**:
+   ```powershell
+   winget pip install flask requests
