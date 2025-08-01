@@ -89,3 +89,10 @@ AI_Pizza_Delivery_App/
           ├── LICENSE # MIT License
           ├── Screenshots/ # Sample output screenshots
           └── README.md # This document
+## Development Team 👥
+    Name	Contribution Area
+    Shashank Valmik Jadhav	Backend Architecture
+    Ajaz Sayed	AI Integration & Prompt
+    Asit Ravindra Dhage	Frontend Development
+    Om Shivale	Testing & Validation
+
