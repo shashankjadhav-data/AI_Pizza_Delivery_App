@@ -101,11 +101,11 @@ AI_Pizza_Delivery_App/
 ## Usage Guide 📋
 1. **Initiate Order:**
 2. **Customization:** :
-         - Choose Pizza type
-         - Choose Pizza Size
-         - Choose Top[pings
-         - Choose Special Instructions
-         - Type Address
+- Choose Pizza type
+- Choose Pizza Size
+- Choose Top[pings
+- Choose Special Instructions
+- Type Address
        
 4. **Confirm:**
 
