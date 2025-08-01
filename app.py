@@ -60,10 +60,10 @@ You are an AI assistant for Pizza Palace taking pizza orders. Follow this EXACT 
 "What size for your [SELECTED_PIZZA]? (Small/Medium/Large)"
 
 3. AFTER size is given, ask:
-"Any toppings? Options: {', '.join(TOPPINGS.keys())}"
+"Any toppings from: {', '.join(TOPPINGS.keys())}? (comma separated)"
 
 4. AFTER toppings, ask:
-"Any special requests? (e.g., {', '.join(SPECIAL_OPTIONS)})"
+"Any special requests? (e.g., {', '.join(SPECIAL_OPTIONS)}, allergies, etc.)"
 
 5. AFTER requests, ask:
 "Please provide delivery address"
@@ -84,9 +84,9 @@ You are an AI assistant for Pizza Palace taking pizza orders. Follow this EXACT 
 STRICT RULES:
 - Ask ONE question at a time
 - WAIT for response before next question
-- If invalid input, re-ask CURRENT question
-- NEVER skip ahead
-- NEVER repeat questions
+- Store ALL selections in session
+- Validate toppings against menu
+- Capture ALL special requests
 """
 
 def get_ollama_response(messages):
@@ -147,27 +147,25 @@ def chat():
             {"role": "assistant", "content": f"Welcome to Pizza Palace! What pizza would you like? Options: {', '.join(PIZZA_MENU.keys())}"}
         ]
         session['current_step'] = 'pizza_selection'
+        session['toppings'] = []
+        session['special_requests'] = []
         session.modified = True
         return jsonify({
             "response": session['history'][-1]['content'],
             "order": None
         })
     
-    # Add user message to history
     session['history'].append({"role": "user", "content": user_input})
     
-    # Validate input based on current step
     current_step = session.get('current_step', 'pizza_selection')
     response = ""
     
     if current_step == 'pizza_selection':
-        # Check if input matches any pizza name (case insensitive)
         selected_pizza = next((pizza for pizza in PIZZA_MENU.keys() 
                              if pizza.lower() in user_input), None)
         if not selected_pizza:
-            response = f"Please select a pizza from our menu: {', '.join(PIZZA_MENU.keys())}"
+            response = f"Please select a pizza from: {', '.join(PIZZA_MENU.keys())}"
         else:
-            # Valid pizza selected, move to size selection
             session['selected_pizza'] = selected_pizza
             session['current_step'] = 'size_selection'
             response = f"What size for your {selected_pizza}? (Small/Medium/Large)"
@@ -176,65 +174,79 @@ def chat():
         size = next((s for s in ['small', 'medium', 'large'] 
                     if s in user_input), None)
         if not size:
-            response = "Please choose a size: Small, Medium, or Large"
+            response = "Please choose: Small, Medium, or Large"
         else:
             session['selected_size'] = size.capitalize()
             session['current_step'] = 'toppings'
-            response = f"Any toppings? Options: {', '.join(TOPPINGS.keys())}"
+            response = f"Add toppings (comma separated): {', '.join(TOPPINGS.keys())}"
     
     elif current_step == 'toppings':
-        # Accept any input for toppings, validate later
+        selected_toppings = []
+        for topping in TOPPINGS.keys():
+            if topping.lower() in user_input:
+                selected_toppings.append(topping)
+        
+        session['toppings'] = selected_toppings
         session['current_step'] = 'special_requests'
-        response = f"Any special requests? (e.g., {', '.join(SPECIAL_OPTIONS)})"
+        response = f"Any special requests? (e.g., {', '.join(SPECIAL_OPTIONS)}, allergies)"
     
     elif current_step == 'special_requests':
-        # Accept any input for special requests
+        selected_requests = []
+        for req in SPECIAL_OPTIONS:
+            if req.lower() in user_input:
+                selected_requests.append(req)
+        
+        if 'allerg' in user_input:
+            selected_requests.append(f"Allergy note: {user_input}")
+            
+        session['special_requests'] = selected_requests
         session['current_step'] = 'address'
         response = "Please provide your delivery address"
     
     elif current_step == 'address':
-        if len(user_input) < 10:  # Basic address validation
-            response = "Please provide a complete delivery address"
+        if len(user_input) < 10:
+            response = "Please provide a complete address"
         else:
             session['address'] = user_input
             session['current_step'] = 'confirmation'
             
-            # Build order summary
             summary = f"""Your Order:
 - Pizza: {session['selected_pizza']} ({session['selected_size']})
-- Toppings: {session.get('toppings', 'None')}
-- Special Requests: {session.get('special_requests', 'None')}
+- Toppings: {', '.join(session['toppings']) or 'None'}
+- Special Requests: {', '.join(session['special_requests']) or 'None'}
 - Address: {session['address']}
 
-Please confirm (yes/no)"""
+Total: ${calculate_total({
+                'pizzas': [{'name': session['selected_pizza'], 'size': session['selected_size'], 'quantity': 1}],
+                'toppings': session['toppings'],
+                'special_requests': session['special_requests']
+            })}
+
+Confirm (yes/no)?"""
             response = summary
     
     elif current_step == 'confirmation':
         if 'yes' in user_input:
-            # Generate order completion
             order_data = {
                 "pizzas": [{
                     "name": session['selected_pizza'],
                     "size": session['selected_size'],
                     "quantity": 1
                 }],
-                "toppings": session.get('toppings', []),
-                "special_requests": session.get('special_requests', []),
+                "toppings": session['toppings'],
+                "special_requests": session['special_requests'],
                 "address": session['address']
             }
             order_data["total"] = calculate_total(order_data)
             response = f"[ORDER_COMPLETE]\n{json.dumps(order_data, indent=2)}\n[/ORDER_COMPLETE]"
             session['current_order'] = order_data
-            session['current_step'] = 'complete'
         else:
             response = "What would you like to change?"
-            session['current_step'] = 'pizza_selection'  # Restart process
+            session['current_step'] = 'pizza_selection'
     
-    # Add AI response to history
     session['history'].append({"role": "assistant", "content": response})
     session.modified = True
     
-    # Check for completed order
     order_data = extract_order_data(response)
     if order_data:
         order_data["total"] = calculate_total(order_data)
