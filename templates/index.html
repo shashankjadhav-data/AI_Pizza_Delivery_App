@@ -34,14 +34,6 @@
             padding: 20px;
             text-align: center;
         }
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
-        header p {
-            margin: 5px 0 0;
-            opacity: 0.9;
-        }
         #chat-container {
             flex: 1;
             padding: 20px;
@@ -93,7 +85,6 @@
         }
         #user-input:focus {
             border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         .btn {
             background: #2ecc71;
@@ -108,23 +99,12 @@
         }
         .btn:hover {
             background: #27ae60;
-            transform: translateY(-2px);
-        }
-        .btn:active {
-            transform: translateY(0);
         }
         .btn-secondary {
             background: #3498db;
         }
-        .btn-danger {
-            background: #e74c3c;
-        }
         .btn-warning {
             background: #f39c12;
-        }
-        .btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
         }
         #status {
             text-align: center;
@@ -146,44 +126,6 @@
             margin: 15px 0;
             max-height: 300px;
             overflow-y: auto;
-        }
-        .order-summary h3 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-        .order-section {
-            margin-bottom: 15px;
-        }
-        .order-section h4 {
-            margin-bottom: 8px;
-            color: #3498db;
-        }
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .special-instruction {
-            font-style: italic;
-            color: #7f8c8d;
-            padding-left: 15px;
-            margin: 3px 0;
-        }
-        .address {
-            padding: 8px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .order-total {
-            font-weight: bold;
-            border-top: 2px solid #3498db;
-            padding-top: 10px;
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
         }
         .json-container {
             background: #2c3e50;
@@ -227,6 +169,19 @@
             margin-top: 15px;
             flex-wrap: wrap;
         }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order-total {
+            font-weight: bold;
+            border-top: 2px solid #3498db;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -259,9 +214,9 @@
                 </div>
                 
                 <div class="confirmation-buttons">
-                    <button id="confirm-btn" class="btn confirm-btn">✅ Confirm Order</button>
+                    <button id="confirm-btn" class="btn">✅ Confirm Order</button>
                     <button id="manual-confirm-btn" class="btn btn-warning">🔄 Confirm Manually</button>
-                    <button id="edit-btn" class="btn edit-btn">✏️ Edit Order</button>
+                    <button id="edit-btn" class="btn btn-secondary">✏️ Edit Order</button>
                 </div>
             </div>
         </div>
@@ -291,25 +246,6 @@
         let currentOrder = null;
         let isProcessing = false;
         
-        // Menu data for client-side formatting
-        const PIZZA_MENU = {
-            "Margherita": { "Small": 9.99, "Medium": 12.99, "Large": 15.99 },
-            "Pepperoni": { "Small": 11.99, "Medium": 14.99, "Large": 17.99 },
-            "Vegetarian": { "Small": 10.99, "Medium": 13.99, "Large": 16.99 },
-            "Supreme": { "Small": 12.99, "Medium": 15.99, "Large": 18.99 },
-            "Hawaiian": { "Small": 11.49, "Medium": 14.49, "Large": 17.49 }
-        };
-        
-        const TOPPINGS = {
-            "Extra cheese": 1.50,
-            "Mushrooms": 1.00,
-            "Olives": 0.75,
-            "Peppers": 0.75,
-            "Onions": 0.50,
-            "Sausage": 1.25,
-            "Bacon": 1.75
-        };
-        
         // Tab switching
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -332,28 +268,21 @@
         }
         
         function updateOrderDisplay(order) {
-            let summaryHTML = '';
+            let summaryHTML = '<div class="order-section">';
             
             // Pizzas
-            if (order.pizzas && order.pizzas.length > 0) {
-                summaryHTML += '<div class="order-section"><h4>Pizzas</h4>';
-                order.pizzas.forEach(pizza => {
-                    const pizzaPrice = PIZZA_MENU[pizza.name][pizza.size];
-                    summaryHTML += `
-                        <div class="order-item">
-                            <span>${pizza.quantity}x ${pizza.name} (${pizza.size})</span>
-                            <span>$${(pizzaPrice * pizza.quantity).toFixed(2)}</span>
-                        </div>`;
-                    if (pizza.special_instructions) {
-                        summaryHTML += `<div class="special-instruction">(${pizza.special_instructions})</div>`;
-                    }
-                });
-                summaryHTML += '</div>';
-            }
+            summaryHTML += '<h4>Pizzas</h4>';
+            order.pizzas.forEach(pizza => {
+                summaryHTML += `
+                    <div class="order-item">
+                        <span>${pizza.quantity}x ${pizza.name} (${pizza.size})</span>
+                        <span>$${(PIZZA_MENU[pizza.name][pizza.size] * pizza.quantity).toFixed(2)}</span>
+                    </div>`;
+            });
             
             // Toppings
+            summaryHTML += '<h4>Toppings</h4>';
             if (order.toppings && order.toppings.length > 0) {
-                summaryHTML += '<div class="order-section"><h4>Extra Toppings</h4>';
                 order.toppings.forEach(topping => {
                     summaryHTML += `
                         <div class="order-item">
@@ -361,29 +290,23 @@
                             <span>$${TOPPINGS[topping].toFixed(2)}</span>
                         </div>`;
                 });
-                summaryHTML += '</div>';
+            } else {
+                summaryHTML += '<div>No toppings</div>';
             }
             
             // Special Requests
+            summaryHTML += '<h4>Special Requests</h4>';
             if (order.special_requests && order.special_requests.length > 0) {
-                summaryHTML += '<div class="order-section"><h4>Special Requests</h4>';
                 order.special_requests.forEach(req => {
-                    summaryHTML += `
-                        <div class="order-item">
-                            <span>${req}</span>
-                        </div>`;
+                    summaryHTML += `<div>${req}</div>`;
                 });
-                summaryHTML += '</div>';
+            } else {
+                summaryHTML += '<div>No special requests</div>';
             }
             
             // Address
-            if (order.address) {
-                summaryHTML += `
-                    <div class="order-section">
-                        <h4>Delivery Address</h4>
-                        <div class="address">${order.address}</div>
-                    </div>`;
-            }
+            summaryHTML += '<h4>Delivery Address</h4>';
+            summaryHTML += `<div>${order.address}</div>`;
             
             // Total
             summaryHTML += `
@@ -392,6 +315,7 @@
                     <span>$${order.total.toFixed(2)}</span>
                 </div>`;
             
+            summaryHTML += '</div>';
             orderSummary.innerHTML = summaryHTML;
             jsonOutput.textContent = JSON.stringify(order, null, 2);
         }
@@ -415,7 +339,7 @@
                 return response.json();
             })
             .then(data => {
-                if (data.response.includes("Sorry, an error occurred")) {
+                if (data.response.includes("Error:")) {
                     throw new Error(data.response);
                 }
                 
@@ -475,7 +399,7 @@
             if (!currentOrder) return;
             
             manualConfirmBtn.disabled = true;
-            statusDiv.textContent = 'Manually confirming order...';
+            statusDiv.textContent = 'Manually confirming...';
             
             fetch('/manual-confirm', {
                 method: 'POST',
@@ -506,6 +430,25 @@
             currentOrder = null;
             userInput.focus();
         });
+        
+        // Menu data for client-side display
+        const PIZZA_MENU = {
+            "Margherita": { "Small": 9.99, "Medium": 12.99, "Large": 15.99 },
+            "Pepperoni": { "Small": 11.99, "Medium": 14.99, "Large": 17.99 },
+            "Vegetarian": { "Small": 10.99, "Medium": 13.99, "Large": 16.99 },
+            "Supreme": { "Small": 12.99, "Medium": 15.99, "Large": 18.99 },
+            "Hawaiian": { "Small": 11.49, "Medium": 14.49, "Large": 17.49 }
+        };
+        
+        const TOPPINGS = {
+            "Extra cheese": 1.50,
+            "Mushrooms": 1.00,
+            "Olives": 0.75,
+            "Peppers": 0.75,
+            "Onions": 0.50,
+            "Sausage": 1.25,
+            "Bacon": 1.75
+        };
         
         // Initial focus
         userInput.focus();
