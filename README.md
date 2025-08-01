@@ -97,12 +97,12 @@ AI_Pizza_Delivery_App/
     Om Shivale	Testing & Validation
 ## Usage Guide 📋
 1. **Initiate Order:**
-2. **Customization:**
-   -Choose Pizza type
-   -Choose Pizza Size
-   -Choose Top[pings
-   -Choose Special Instructions
-   -Type Address
-   
+2. **Customization:** :
+         - Choose Pizza type
+         - Choose Pizza Size
+         - Choose Top[pings
+         - Choose Special Instructions
+         - Type Address
+       
 4. **Confirm:**
 
