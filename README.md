@@ -86,6 +86,7 @@ AI_Pizza_Delivery_App/
           ├── run.py # Optional script to run the app
           ├── requirements.txt # Python dependencies
           ├── flowchart.png # Mermaid flowchart
+          ├── Report and Presentation # Project report and the presentation
           ├── LICENSE # MIT License
           ├── Screenshots/ # Sample output screenshots
           ├── Screen Recording/ # Sample output video
