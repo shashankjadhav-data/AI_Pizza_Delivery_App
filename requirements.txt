@@ -1,3 +1,10 @@
+pip install flask requests
+brew install python ollama
+ollama pull mistral:7b
+pip3 install flask requests
+ollama serve
+python -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
 Flask==3.0.0
 Flask-Cors==4.0.0
 requests==2.31.0
